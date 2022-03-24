@@ -6,6 +6,7 @@ from functools import reduce
 import copy
 import operator
 import subprocess
+import io
 
 from ._ffmpeg import input, output
 from .nodes import (
@@ -287,6 +288,10 @@ def run_async(
     if quiet:
         stderr_stream = subprocess.STDOUT
         stdout_stream = subprocess.DEVNULL
+
+    if isinstance(pipe_stderr, io.TextIOBase):
+        stderr_stream = pipe_stderr
+    
     return subprocess.Popen(
         args,
         stdin=stdin_stream,
